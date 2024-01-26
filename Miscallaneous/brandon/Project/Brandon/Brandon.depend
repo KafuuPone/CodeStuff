@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1669383493 source:c:\users\howqi\documents\codeforces\brandon\project\brandon\main.c
+	<stdio.h>
+	<stdlib.h>
+
