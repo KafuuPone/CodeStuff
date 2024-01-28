@@ -9,24 +9,23 @@ import datetime as dt
 
 year = 2021
 month = 12
-day = 31
+day = 25
 lat, lon = 121.52, 25.10
 
 ts = api.load.timescale()
 
 planets = load('de421.bsp')
-earth, sun, saturn = planets['earth'], planets['sun'], planets['saturn barycenter']
+earth, sun, mars = planets['earth'], planets['sun'], planets['mars barycenter']
 current_loc = earth + wgs84.latlon(lat, lon)
 
 py_time = dt.datetime(year, month, day)
 py_time = py_time.replace(tzinfo=dt.timezone(dt.timedelta(hours=0)))
 t = ts.from_datetime(py_time)
-astrometric = current_loc.at(t).observe(saturn)
+astrometric = current_loc.at(t).observe(mars)
 ra, dec, distance = astrometric.radec(epoch=t)
 alt, az, d = astrometric.apparent().altaz()
 print(alt)
 print(az)
-print(d)
 print(ra)
 print(dec)
 print(distance)
