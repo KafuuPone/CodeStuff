@@ -18,6 +18,10 @@ def check_battery():
     percent = battery.percent
     return percent
 
+def is_charging():
+    battery = psutil.sensors_battery()
+    return battery.power_plugged
+
 def send_notif(percent):
     notif = Notify(
         default_application_name="",
@@ -34,14 +38,11 @@ def send_notif(percent):
 
 def main():
     while True:
-        prev_percent = check_battery()
+        percent = check_battery()
+        if percent<=30 and not is_charging():
+            send_notif(percent)
+        elif percent>=90 and is_charging():
+            send_notif(percent)
         time.sleep(60)
-        curr_percent = check_battery()
-        if curr_percent<=30 and prev_percent>30:
-            send_notif(curr_percent)
-        elif curr_percent>=90 and prev_percent<90:
-            send_notif(curr_percent)
-        elif curr_percent==100:
-            send_notif(curr_percent)
 
 main()
