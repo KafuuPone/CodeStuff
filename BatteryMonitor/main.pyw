@@ -8,7 +8,7 @@ TASKKILL /F /IM pythonw.exe
 
 import psutil
 import os
-from windows_toasts import WindowsToaster, InteractableWindowsToaster, Toast, wrappers
+from windows_toasts import WindowsToaster, Toast, wrappers
 import time
 
 # Basic variables
@@ -26,22 +26,17 @@ def is_charging():
     battery = psutil.sensors_battery()
     return battery.power_plugged
 
-def send_notif(percent):
-    batteryToast = Toast()
-    batteryToast.AddImage(icon)
-    if percent <= 30:
-        batteryToast.text_fields = ["Low Battery!", f"{percent}% charged, please plug in your charger!"]
-    elif percent >= 90:
-        batteryToast.text_fields = ["Battery full!", f"{percent}% charged, please unplug your charger!"]
-    toaster.show_toast(batteryToast)
-
 def main():
+    battery_toast = Toast()
+    battery_toast.AddImage(icon)
     while True:
         percent = check_battery()
         if percent<=30 and not is_charging():
-            send_notif(percent)
+            battery_toast.text_fields = [f"Low Battery! ({percent}%)", "Please plug in your charger!"]
+            toaster.show_toast(battery_toast)
         elif percent>=90 and is_charging():
-            send_notif(percent)
+            battery_toast.text_fields = [f"Battery full! ({percent}%)", "Please unplug your charger!"]
+            toaster.show_toast(battery_toast)
         time.sleep(60) # check interval
 
 main()
