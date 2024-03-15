@@ -8,10 +8,14 @@ TASKKILL /F /IM pythonw.exe
 
 import psutil
 import os
-from notifypy import Notify
+from windows_toasts import WindowsToaster, InteractableWindowsToaster, Toast, wrappers
 import time
 
-current_dir = os.getcwd()
+# Basic variables
+current_dir = os.getcwd() # current directory
+toaster = WindowsToaster('Battery Monitor') # toaster setup
+image = wrappers.ToastImage(f"{current_dir}\\icon.ico") # image object
+icon = wrappers.ToastDisplayImage(image, position=wrappers.ToastImagePosition.AppLogo) # icon setup and position
 
 def check_battery():
     battery = psutil.sensors_battery()
@@ -23,18 +27,13 @@ def is_charging():
     return battery.power_plugged
 
 def send_notif(percent):
-    notif = Notify(
-        default_application_name="",
-        default_notification_icon=f'{current_dir}\\icon.ico'
-    )
+    batteryToast = Toast()
+    batteryToast.AddImage(icon)
     if percent <= 30:
-        notif.title = "Low Battery!"
-        notif.message = f"{percent}% charged, please plug in your charger!"
-        notif.send()
+        batteryToast.text_fields = ["Low Battery!", f"{percent}% charged, please plug in your charger!"]
     elif percent >= 90:
-        notif.title = "Battery full!"
-        notif.message = f"{percent}% charged, please unplug your charger!"
-        notif.send()
+        batteryToast.text_fields = ["Battery full!", f"{percent}% charged, please unplug your charger!"]
+    toaster.show_toast(batteryToast)
 
 def main():
     while True:
@@ -43,6 +42,6 @@ def main():
             send_notif(percent)
         elif percent>=90 and is_charging():
             send_notif(percent)
-        time.sleep(60)
+        time.sleep(60) # check interval
 
 main()
