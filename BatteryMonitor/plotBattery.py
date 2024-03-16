@@ -15,7 +15,7 @@ if os.path.exists(filepath):
     rawdata = np.load(filepath)
     data = {'Time': rawdata['time'], 'Battery': rawdata['percent']}
     df = pd.DataFrame(data)
-    ax = df.plot(x='Time', y='Battery', marker='o', linestyle='-', markersize=3,legend=False)
+    ax = df.plot(x='Time', y='Battery', marker='o', linestyle='-', markersize=3, legend=False)
     ax.set_xlabel('Time (HH:MM)')
     ax.set_ylabel('Battery (%)')
     ax.set_title(current_date)
