@@ -42,16 +42,16 @@ def main():
             toaster.show_toast(battery_toast)
 
         # battery log
-        current_date = str(datetime.now().date())
-        current_time = datetime.now().strftime('%H:%M')
+        current_datetime = datetime.now()
+        current_date = str(current_datetime.date())
         filepath = f'{current_dir}\\BatteryLog\\{current_date}.npy'
-        dtype = [('time', 'U5'), ('percent', int)]
-        new_data = np.array([(current_time, percent)], dtype=dtype)
         if os.path.exists(filepath):
-            daily_log = np.load(filepath)
-            np.save(filepath, np.concatenate((daily_log, new_data)))
+            daily_log = np.load(filepath, allow_pickle=True)
+            new_time = np.append(daily_log[0], current_datetime)
+            new_percent = np.append(daily_log[1], percent)
+            np.save(filepath, (new_time, new_percent))
         else:
-            np.save(filepath, new_data)
+            np.save(filepath, ([current_datetime], [percent]))
 
         time.sleep(60) # check interval
 
