@@ -61,7 +61,7 @@ def bubble_gen():
 
     # Merge text image on top of speech bubble
     bubble_image = Image.open("./speech_bubble/bubble.png")
-    x_offset, y_offset = (bubble_image.width - text_image.width)//2, 26
+    x_offset, y_offset = (bubble_image.width - text_image.width)//2+5, 26
     bubble_image.paste(text_image, (x_offset, y_offset), text_image)
     bubble_image.save("./speech_bubble/speech_bubble.png")
 
@@ -73,11 +73,30 @@ from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel
 
+from win32api import GetMonitorInfo, MonitorFromPoint
+import ctypes
+
 # generate speech bubble image
 bubble_gen()
 
+# Calculating position - assuming windows 10, taskbar bottom, standard height
+# relative to top left
+monitor_info = GetMonitorInfo(MonitorFromPoint((0,0)))
+monitor_area, work_area = monitor_info.get("Monitor"), monitor_info.get("Work")
+scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0) / 100
+# unscaled variables
+monitor_width, monitor_height = monitor_area[2], monitor_area[3]
+work_width, work_height = work_area[2], work_area[3]
+# scaled variables
+scaled_work_height = int(scale_factor*work_height) # height of monitor - taskbar
+scaled_monitor_width = int(scale_factor*monitor_width)
+scaled_taskbar_height = int(scale_factor*(monitor_height-work_height))
+x_offset = int(scaled_monitor_width-5.5*scaled_taskbar_height+5) # accounted for different monitors
+if x_offset+245 > scaled_monitor_width: # in case the speech bubble leaves the screen
+    x_offset = scaled_monitor_width-245
+y_offset = scaled_work_height-160
+
 # display speech bubble
-x_offset, y_offset = 1650, 870
 
 app = QApplication(sys.argv)
 
@@ -112,7 +131,7 @@ fadeOutAnimation.finished.connect(app.quit)
 # Start the fade-in animation
 fadeInAnimation.start()
 # Start the fade-out animation
-QTimer.singleShot(6000, fadeOutAnimation.start)
+QTimer.singleShot(4000, fadeOutAnimation.start)
 
 # Wait for 0.8s
 time.sleep(0.8)
