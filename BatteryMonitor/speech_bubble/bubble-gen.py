@@ -90,10 +90,8 @@ work_width, work_height = work_area[2], work_area[3]
 # scaled variables
 scaled_work_height = int(scale_factor*work_height) # height of monitor - taskbar
 scaled_monitor_width = int(scale_factor*monitor_width)
-scaled_taskbar_height = int(scale_factor*(monitor_height-work_height))
-x_offset = int(scaled_monitor_width-5.5*scaled_taskbar_height+5) # accounted for different monitors
-if x_offset+245 > scaled_monitor_width: # in case the speech bubble leaves the screen
-    x_offset = scaled_monitor_width-245
+# final position
+x_offset = scaled_monitor_width-260
 y_offset = scaled_work_height-160
 
 # display speech bubble

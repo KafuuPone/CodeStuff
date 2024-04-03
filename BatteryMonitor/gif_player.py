@@ -18,10 +18,7 @@ work_width, work_height = work_area[2], work_area[3]
 # scaled variables
 scaled_work_height = int(scale_factor*work_height) # height of monitor - taskbar
 scaled_monitor_width = int(scale_factor*monitor_width)
-scaled_taskbar_height = int(scale_factor*(monitor_height-work_height))
-x = int(scaled_monitor_width-5.5*scaled_taskbar_height-72) # accounted for different monitors
-if x+322 > scaled_monitor_width: # in case the speech bubble leaves the screen
-    x = scaled_monitor_width-322
+x = scaled_monitor_width-337
 y = scaled_work_height-118 # -118: y-offset of topleft of gif relative to taskbar
 
 class MainWindow(QMainWindow):
